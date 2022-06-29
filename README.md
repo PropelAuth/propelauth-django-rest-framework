@@ -13,7 +13,7 @@ A Django Rest Framework library for managing authentication, backed by [PropelAu
 
 ## Documentation
 
-- Full reference this library is [here](https://docs.propelauth.com/reference/backend-apis/drf.html)
+- Full reference this library is [here](https://docs.propelauth.com/reference/backend-apis/drf/)
 - Getting started guides for PropelAuth are [here](https://docs.propelauth.com/)
 
 ## Questions?
