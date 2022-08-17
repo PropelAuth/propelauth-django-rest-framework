@@ -6,7 +6,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="propelauth-django-rest-framework",
-    version="1.0.0",
+    version="1.0.1",
     description="A library for managing authentication in Django Rest Framework",
     long_description=README,
     long_description_content_type="text/markdown",
