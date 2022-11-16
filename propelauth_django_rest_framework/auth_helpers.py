@@ -1,5 +1,5 @@
 from propelauth_py import UnauthorizedException
-from propelauth_py.errors import UnexpectedException, ForbiddenException
+from propelauth_py.errors import ForbiddenException
 from rest_framework import permissions
 from rest_framework.exceptions import APIException
 
@@ -18,22 +18,138 @@ def _is_authenticated_permission_wrapper(validate_access_token_and_get_user, req
 
 
 def _is_user_in_org(validate_access_token_and_get_user_with_org, debug_mode):
-    validate_user_and_org = _validate_user_and_org_wrapper(validate_access_token_and_get_user_with_org, debug_mode)
-
-    def is_user_in_org_wrapper(req_to_org_id=_default_req_to_org_id, minimum_required_role=None):
+    def is_user_in_org_wrapper(req_to_org_id=_default_req_to_org_id):
         class IsUserInOrg(permissions.BasePermission):
 
             def has_permission(self, request, view):
-                required_org_id = req_to_org_id(request)
-                user_and_org = validate_user_and_org(request, required_org_id, minimum_required_role)
+                try:
+                    authorization_header = request.headers.get("Authorization")
+                    required_org_id = req_to_org_id(request)
 
-                request.propelauth_user = user_and_org.user
-                request.propelauth_org = user_and_org.org_member_info
+                    user_and_org = validate_access_token_and_get_user_with_org(authorization_header, required_org_id)
 
-                # We can return true because validate_user_and_org will raise a 401/403 if they don't have permission
+                    request.propelauth_user = user_and_org.user
+                    request.propelauth_org = user_and_org.org_member_info
+                except UnauthorizedException as e:
+                    _handle_unauthorized_exception(e, True, debug_mode)
+
+                except ForbiddenException as e:
+                    _handle_forbidden_exception(e, debug_mode)
+
                 return True
 
         return IsUserInOrg
+
+    return is_user_in_org_wrapper
+
+
+def _is_user_in_org_with_minimum_role(validate_access_token_and_get_user_with_org_by_minimum_role, debug_mode):
+    def is_user_in_org_wrapper(minimum_required_role, req_to_org_id=_default_req_to_org_id):
+        class IsUserInOrgWithMinimumRole(permissions.BasePermission):
+
+            def has_permission(self, request, view):
+                try:
+                    authorization_header = request.headers.get("Authorization")
+                    required_org_id = req_to_org_id(request)
+
+                    user_and_org = validate_access_token_and_get_user_with_org_by_minimum_role(authorization_header,
+                                                                                               required_org_id,
+                                                                                               minimum_required_role)
+
+                    request.propelauth_user = user_and_org.user
+                    request.propelauth_org = user_and_org.org_member_info
+                except UnauthorizedException as e:
+                    _handle_unauthorized_exception(e, True, debug_mode)
+
+                except ForbiddenException as e:
+                    _handle_forbidden_exception(e, debug_mode)
+
+                return True
+
+        return IsUserInOrgWithMinimumRole
+
+    return is_user_in_org_wrapper
+
+
+def _is_user_in_org_with_exact_role(validate_access_token_and_get_user_with_org_by_exact_role, debug_mode):
+    def is_user_in_org_wrapper(role, req_to_org_id=_default_req_to_org_id):
+        class IsUserInOrgWithRole(permissions.BasePermission):
+
+            def has_permission(self, request, view):
+                try:
+                    authorization_header = request.headers.get("Authorization")
+                    required_org_id = req_to_org_id(request)
+
+                    user_and_org = validate_access_token_and_get_user_with_org_by_exact_role(authorization_header,
+                                                                                             required_org_id, role)
+
+                    request.propelauth_user = user_and_org.user
+                    request.propelauth_org = user_and_org.org_member_info
+                except UnauthorizedException as e:
+                    _handle_unauthorized_exception(e, True, debug_mode)
+
+                except ForbiddenException as e:
+                    _handle_forbidden_exception(e, debug_mode)
+
+                return True
+
+        return IsUserInOrgWithRole
+
+    return is_user_in_org_wrapper
+
+
+def _is_user_in_org_with_permission(validate_access_token_and_get_user_with_org_by_permission, debug_mode):
+    def is_user_in_org_wrapper(permission, req_to_org_id=_default_req_to_org_id):
+        class IsUserInOrgWithPermission(permissions.BasePermission):
+
+            def has_permission(self, request, view):
+                try:
+                    authorization_header = request.headers.get("Authorization")
+                    required_org_id = req_to_org_id(request)
+
+                    user_and_org = validate_access_token_and_get_user_with_org_by_permission(authorization_header,
+                                                                                             required_org_id,
+                                                                                             permission)
+
+                    request.propelauth_user = user_and_org.user
+                    request.propelauth_org = user_and_org.org_member_info
+                except UnauthorizedException as e:
+                    _handle_unauthorized_exception(e, True, debug_mode)
+
+                except ForbiddenException as e:
+                    _handle_forbidden_exception(e, debug_mode)
+
+                return True
+
+        return IsUserInOrgWithPermission
+
+    return is_user_in_org_wrapper
+
+
+def _is_user_in_org_with_all_permissions(validate_access_token_and_get_user_with_org_by_all_permissions, debug_mode):
+    def is_user_in_org_wrapper(all_permissions, req_to_org_id=_default_req_to_org_id):
+        class IsUserInOrgWithAllPermissions(permissions.BasePermission):
+
+            def has_permission(self, request, view):
+                try:
+                    authorization_header = request.headers.get("Authorization")
+                    required_org_id = req_to_org_id(request)
+
+                    user_and_org = validate_access_token_and_get_user_with_org_by_all_permissions(authorization_header,
+                                                                                                  required_org_id,
+                                                                                                  all_permissions)
+
+                    request.propelauth_user = user_and_org.user
+                    request.propelauth_org = user_and_org.org_member_info
+                except UnauthorizedException as e:
+                    _handle_unauthorized_exception(e, True, debug_mode)
+
+                except ForbiddenException as e:
+                    _handle_forbidden_exception(e, debug_mode)
+
+                return True
+
+        return IsUserInOrgWithAllPermissions
 
     return is_user_in_org_wrapper
 
@@ -51,16 +167,12 @@ def _validate_user_wrapper(validate_access_token_and_get_user, require_user, deb
 
 
 def _validate_user_and_org_wrapper(validate_access_token_and_get_user_with_org, debug_mode):
-    def validate_user_and_org(request, required_org_id, minimum_required_role=None):
+    def validate_user_and_org(request, required_org_id):
         try:
             authorization_header = request.headers.get("Authorization")
-            return validate_access_token_and_get_user_with_org(authorization_header, required_org_id,
-                                                               minimum_required_role)
+            return validate_access_token_and_get_user_with_org(authorization_header, required_org_id)
         except UnauthorizedException as e:
             _handle_unauthorized_exception(e, True, debug_mode)
-
-        except UnexpectedException as e:
-            _handle_unexpected_exception(e, debug_mode)
 
         except ForbiddenException as e:
             _handle_forbidden_exception(e, debug_mode)
@@ -91,12 +203,6 @@ def _handle_forbidden_exception(e, debug_mode):
     if debug_mode:
         raise Http403(detail=e.message)
     raise Http403()
-
-
-def _handle_unexpected_exception(e, debug_mode):
-    if debug_mode:
-        raise Http500(detail=e.message)
-    raise Http500()
 
 
 def _default_req_to_org_id(request):
