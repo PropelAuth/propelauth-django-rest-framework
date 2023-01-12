@@ -9,11 +9,13 @@
 
 A Django Rest Framework library for managing authentication, backed by [PropelAuth](https://www.propelauth.com/?utm_campaign=github-drf).
 
-[PropelAuth](https://www.propelauth.com/?utm_campaign=github-drf) is a prebuilt, hosted authentication solution focused on a great developer experience.
+[PropelAuth](https://www.propelauth.com?ref=github) makes it easy to add authentication and authorization to your B2B/multi-tenant application.
+
+Your frontend gets a beautiful, safe, and customizable login screen. Your backend gets easy authorization with just a few lines of code. You get an easy-to-use dashboard to config and manage everything.
 
 ## Documentation
 
-- Full reference this library is [here](https://docs.propelauth.com/reference/backend-apis/drf/)
+- Full reference this library is [here](https://docs.propelauth.com/reference/backend-apis/django)
 - Getting started guides for PropelAuth are [here](https://docs.propelauth.com/)
 
 ## Questions?
