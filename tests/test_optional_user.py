@@ -43,7 +43,7 @@ def test_optional_user_with_wrong_token(optional_user_route, rsa_keys):
 
 def test_optional_user_with_expired_token(optional_user_route, rsa_keys):
     user_id = random_user_id()
-    access_token = create_access_token({"user_id": user_id}, rsa_keys.private_pem, expires_in=timedelta(minutes=-1))
+    access_token = create_access_token({"user_id": user_id}, rsa_keys.private_pem, expires_in=timedelta(minutes=-5))
 
     request = APIRequestFactory(HTTP_AUTHORIZATION='Bearer ' + access_token).request()
     response = optional_user_route(request)
