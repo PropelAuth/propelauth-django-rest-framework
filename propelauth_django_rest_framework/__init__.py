@@ -26,6 +26,7 @@ Auth = namedtuple(
         "request_to_user",
         "request_to_user_or_none",
         "request_to_user_and_org",
+        "validate_access_token_and_get_user",
         "fetch_user_metadata_by_user_id",
         "fetch_user_metadata_by_email",
         "fetch_user_metadata_by_username",
@@ -114,6 +115,7 @@ def init_auth(
         request_to_user_and_org=_validate_user_and_org_wrapper(
             auth.validate_access_token_and_get_user_with_org, debug_mode
         ),
+        validate_access_token_and_get_user=auth.validate_access_token_and_get_user,
         fetch_user_metadata_by_user_id=auth.fetch_user_metadata_by_user_id,
         fetch_user_metadata_by_email=auth.fetch_user_metadata_by_email,
         fetch_user_metadata_by_username=auth.fetch_user_metadata_by_username,
