@@ -170,5 +170,5 @@ def init_auth(
         resend_email_confirmation=auth.resend_email_confirmation,
         logout_all_user_sessions=auth.logout_all_user_sessions,
         fetch_pending_invites=auth.fetch_pending_invites,
-        revoke_pending_org_invite=auth.revoke_pending_org_invite
+        revoke_pending_org_invite=auth.revoke_pending_org_invite,
     )
