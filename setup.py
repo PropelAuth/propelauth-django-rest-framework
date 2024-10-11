@@ -1,6 +1,7 @@
-from setuptools import find_packages, setup
 import pathlib
 import sys
+
+from setuptools import find_packages, setup
 
 HERE = pathlib.Path(__file__).parent
 README = (HERE / "README.md").read_text()
@@ -11,7 +12,7 @@ pytest_runner = ["pytest-runner"] if needs_pytest else []
 
 setup(
     name="propelauth-django-rest-framework",
-    version="2.1.18",
+    version="2.1.19",
     description="A library for managing authentication in Django Rest Framework",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -23,7 +24,7 @@ setup(
     install_requires=[
         "django",
         "djangorestframework",
-        "propelauth-py==3.1.18",
+        "propelauth-py==3.1.19",
         "requests",
     ],
     setup_requires=pytest_runner,
