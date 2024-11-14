@@ -76,6 +76,10 @@ Auth = namedtuple(
         "resend_email_confirmation",
         "logout_all_user_sessions",
         "fetch_pending_invites",
+        "fetch_saml_sp_metadata",
+        "set_saml_idp_metadata",
+        "saml_go_live",
+        "delete_saml_connection",
     ],
 )
 
@@ -171,4 +175,8 @@ def init_auth(
         logout_all_user_sessions=auth.logout_all_user_sessions,
         fetch_pending_invites=auth.fetch_pending_invites,
         revoke_pending_org_invite=auth.revoke_pending_org_invite,
+        fetch_saml_sp_metadata=auth.fetch_saml_sp_metadata,
+        set_saml_idp_metadata=auth.set_saml_idp_metadata,
+        saml_go_live=auth.saml_go_live,
+        delete_saml_connection=auth.delete_saml_connection,
     )
