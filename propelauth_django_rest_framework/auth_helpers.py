@@ -1,14 +1,16 @@
-from typing import Optional, cast
+from typing import Optional
 from propelauth_py import UnauthorizedException
 from propelauth_py.errors import ForbiddenException
 from propelauth_py.user import User
 from rest_framework import permissions
 from rest_framework.exceptions import APIException
 from rest_framework.request import Request
-from dataclasses import dataclass
 
-@dataclass
-class PropelAuthRequest(Request):
+
+class RequiredPropelAuthRequest(Request):
+    propelauth_user: User
+
+class OptionalPropelAuthRequest(Request):
     propelauth_user: Optional[User] = None
 
 def _is_authenticated_permission_wrapper(validate_access_token_and_get_user, require_user, debug_mode):
@@ -16,8 +18,7 @@ def _is_authenticated_permission_wrapper(validate_access_token_and_get_user, req
 
     class IsUserAuthenticated(permissions.BasePermission):
         def has_permission(self, request, view):
-            custom_request = cast(PropelAuthRequest, request)
-            custom_request.propelauth_user = validate_user(request)
+            request.propelauth_user = validate_user(request)
 
             # We can return true because validate_user will raise a 401 if require_user is true
             return True
