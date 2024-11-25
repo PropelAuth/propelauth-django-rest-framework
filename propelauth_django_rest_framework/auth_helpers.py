@@ -1,8 +1,9 @@
+from typing import Optional
 from propelauth_py import UnauthorizedException
 from propelauth_py.errors import ForbiddenException
+from propelauth_py.user import User
 from rest_framework import permissions
 from rest_framework.exceptions import APIException
-
 
 def _is_authenticated_permission_wrapper(validate_access_token_and_get_user, require_user, debug_mode):
     validate_user = _validate_user_wrapper(validate_access_token_and_get_user, require_user, debug_mode)
@@ -155,7 +156,7 @@ def _is_user_in_org_with_all_permissions(validate_access_token_and_get_user_with
 
 
 def _validate_user_wrapper(validate_access_token_and_get_user, require_user, debug_mode):
-    def validate_user(request):
+    def validate_user(request) -> Optional[User]:
         try:
             authorization_header = request.headers.get("Authorization")
             return validate_access_token_and_get_user(authorization_header)
