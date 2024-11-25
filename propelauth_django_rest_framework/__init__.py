@@ -1,12 +1,10 @@
 from typing import Any, Dict, Optional, List
-
 from propelauth_py import TokenVerificationMetadata, init_base_auth, SamlIdpMetadata
 from propelauth_py.api import (
     OrgQueryOrderBy,
     UserQueryOrderBy,
 )
 from propelauth_py.user import User
-
 from propelauth_django_rest_framework.auth_helpers import (
     _validate_user_wrapper,
     _validate_user_and_org_wrapper,
@@ -17,6 +15,13 @@ from propelauth_django_rest_framework.auth_helpers import (
     _is_user_in_org_with_permission,
     _is_user_in_org_with_all_permissions,
 )
+from rest_framework.request import Request
+
+class RequiredRequest(Request):
+    propelauth_user: User
+
+class OptionalRequest(Request):
+    propelauth_user: Optional[User] = None
 
 class DjangoAuth:
     def __init__(self, auth_url: str, integration_api_key: str, token_verification_metadata: Optional[TokenVerificationMetadata], debug_mode: bool):

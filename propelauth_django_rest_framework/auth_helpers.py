@@ -4,14 +4,6 @@ from propelauth_py.errors import ForbiddenException
 from propelauth_py.user import User
 from rest_framework import permissions
 from rest_framework.exceptions import APIException
-from rest_framework.request import Request
-
-
-class RequiredPropelAuthRequest(Request):
-    propelauth_user: User
-
-class OptionalPropelAuthRequest(Request):
-    propelauth_user: Optional[User] = None
 
 def _is_authenticated_permission_wrapper(validate_access_token_and_get_user, require_user, debug_mode):
     validate_user = _validate_user_wrapper(validate_access_token_and_get_user, require_user, debug_mode)
