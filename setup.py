@@ -12,7 +12,7 @@ pytest_runner = ["pytest-runner"] if needs_pytest else []
 
 setup(
     name="propelauth-django-rest-framework",
-    version="4.1.0",
+    version="4.1.1",
     description="A library for managing authentication in Django Rest Framework",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -24,7 +24,7 @@ setup(
     install_requires=[
         "django",
         "djangorestframework",
-        "propelauth-py==4.1.0",
+        "propelauth-py==4.1.1",
         "requests",
     ],
     setup_requires=pytest_runner,
