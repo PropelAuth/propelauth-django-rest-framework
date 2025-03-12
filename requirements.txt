@@ -1,5 +1,5 @@
 django
 djangorestframework
-propelauth-py==4.2.2
+propelauth-py==4.2.3
 pytest
 requests-mock
