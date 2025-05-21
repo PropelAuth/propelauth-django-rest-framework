@@ -26,6 +26,7 @@ setup(
         "djangorestframework",
         "propelauth-py==4.2.7",
         "requests",
+        "httpx>=0.28.1"
     ],
     setup_requires=pytest_runner,
     tests_require=["pytest==4.4.1"],
