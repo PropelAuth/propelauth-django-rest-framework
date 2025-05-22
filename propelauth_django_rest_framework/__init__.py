@@ -601,6 +601,11 @@ class DjangoAuthAsync():
             self.auth.validate_access_token_and_get_user_with_org, self.debug_mode
         )
         
+    def validate_access_token_and_get_user(self, authorization_header: str) -> User:
+        return self.auth.validate_access_token_and_get_user(
+            authorization_header=authorization_header
+        )
+        
     async def fetch_user_metadata_by_user_id(self, user_id: str, include_orgs: bool = False):
         return await self.auth.fetch_user_metadata_by_user_id(user_id, include_orgs)
     
