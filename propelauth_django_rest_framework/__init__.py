@@ -524,7 +524,7 @@ class DjangoAuth:
     def verify_step_up_grant(self, action_type: str, user_id: str, grant: str) -> bool:
         return self.auth.verify_step_up_grant(action_type, user_id, grant)
     
-class DjangoAuthAsync(DjangoAuth):
+class DjangoAuthAsync():
     def __init__(
         self, 
         auth_url: str, 
@@ -533,28 +533,73 @@ class DjangoAuthAsync(DjangoAuth):
         debug_mode: bool,
         httpx_client: Optional[httpx.AsyncClient] = None,
     ):
-        super().__init__(
-            auth_url = auth_url, 
-            integration_api_key = integration_api_key,
-            token_verification_metadata = token_verification_metadata,
-            debug_mode = debug_mode
-        )
-        
-        self.is_httpx_client_provided = httpx_client is not None
-        if httpx_client:
-            self.httpx_client = httpx_client
-        else:
-            self.httpx_client = httpx.AsyncClient()
-            self.is_httpx_client_provided = False
-        
+        self.auth_url = auth_url
+        self.integration_api_key = integration_api_key
+        self.token_verification_metadata = token_verification_metadata
+        self.debug_mode = debug_mode
+        self.httpx_client = httpx_client
         self.auth = init_base_async_auth(auth_url, integration_api_key, token_verification_metadata, self.httpx_client)
         
-    async def __aenter__(self):
-        return self
+    @property
+    def IsUserAuthenticated(self):
+        return _is_authenticated_permission_wrapper(
+            self.auth.validate_access_token_and_get_user, True, self.debug_mode
+        )
 
-    async def __aexit__(self, exc_type=None, exc_val=None, exc_tb=None):
-        if not self.is_httpx_client_provided:
-            await self.httpx_client.aclose()
+    @property
+    def AllowAny(self):
+        return _is_authenticated_permission_wrapper(
+            self.auth.validate_access_token_and_get_user, False, self.debug_mode
+        )
+
+    @property
+    def IsUserInOrg(self):
+        return _is_user_in_org(
+            self.auth.validate_access_token_and_get_user_with_org, self.debug_mode
+        )
+
+    @property
+    def IsUserInOrgWithMinimumRole(self):
+        return _is_user_in_org_with_minimum_role(
+            self.auth.validate_access_token_and_get_user_with_org_by_minimum_role,
+            self.debug_mode,
+        )
+
+    @property
+    def IsUserInOrgWithRole(self):
+        return _is_user_in_org_with_exact_role(
+            self.auth.validate_access_token_and_get_user_with_org_by_exact_role,
+            self.debug_mode,
+        )
+
+    @property
+    def IsUserInOrgWithPermission(self):
+        return _is_user_in_org_with_permission(
+            self.auth.validate_access_token_and_get_user_with_org_by_permission,
+            self.debug_mode,
+        )
+
+    @property
+    def IsUserInOrgWithAllPermissions(self):
+        return _is_user_in_org_with_all_permissions(
+            self.auth.validate_access_token_and_get_user_with_org_by_all_permissions,
+            self.debug_mode,
+        )
+
+    def request_to_user(self):
+        return _validate_user_wrapper(
+            self.auth.validate_access_token_and_get_user, True, self.debug_mode
+        )
+
+    def request_to_user_or_none(self):
+        return _validate_user_wrapper(
+            self.auth.validate_access_token_and_get_user, False, self.debug_mode
+        )
+
+    def request_to_user_and_org(self):
+        return _validate_user_and_org_wrapper(
+            self.auth.validate_access_token_and_get_user_with_org, self.debug_mode
+        )
         
     async def fetch_user_metadata_by_user_id(self, user_id: str, include_orgs: bool = False):
         return await self.auth.fetch_user_metadata_by_user_id(user_id, include_orgs)
