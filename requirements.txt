@@ -1,6 +1,6 @@
 django
 djangorestframework
-propelauth-py==4.2.7
+propelauth-py==4.2.8
 pytest
 requests-mock
 httpx
