@@ -2,6 +2,7 @@ import httpx
 from typing import Any, Dict, Optional, List
 from propelauth_py import (
     TokenVerificationMetadata,
+    configure_logging,
     init_base_auth,
     init_base_async_auth,
     SamlIdpMetadata,
@@ -901,7 +902,10 @@ def init_auth(
     api_key: str,
     token_verification_metadata: Optional[TokenVerificationMetadata] = None,
     debug_mode=False,
+    log_exceptions=False,
 ) -> DjangoAuth:
+    configure_logging(log_exceptions=log_exceptions)
+
     """Fetches metadata required to validate access tokens and returns auth decorators and utilities"""
     return DjangoAuth(
         auth_url=auth_url,
@@ -916,6 +920,9 @@ def init_auth_async(
     token_verification_metadata: Optional[TokenVerificationMetadata] = None,
     debug_mode=False,
     httpx_client: Optional[httpx.AsyncClient] = None,
+    log_exceptions=False,
 ) -> DjangoAuthAsync:
+    configure_logging(log_exceptions=log_exceptions)
+
     """Fetches metadata required to validate access tokens and returns auth decorators and utilities"""
     return DjangoAuthAsync(auth_url=auth_url, integration_api_key=api_key, token_verification_metadata=token_verification_metadata, debug_mode=debug_mode, httpx_client=httpx_client)
