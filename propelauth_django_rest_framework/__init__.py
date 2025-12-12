@@ -12,6 +12,7 @@ from propelauth_py import (
 from propelauth_py.api import (
     OrgQueryOrderBy,
     UserQueryOrderBy,
+    SsoTrustLevel
 )
 from propelauth_py.user import User
 from propelauth_django_rest_framework.auth_helpers import (
@@ -120,13 +121,13 @@ class DjangoAuth:
     def fetch_user_metadata_by_user_id(self, user_id: str, include_orgs: bool = False):
         return self.auth.fetch_user_metadata_by_user_id(user_id, include_orgs)
 
-    def fetch_user_metadata_by_email(self, email: str, include_orgs: bool = False):
-        return self.auth.fetch_user_metadata_by_email(email, include_orgs)
+    def fetch_user_metadata_by_email(self, email: str, include_orgs: bool = False, isolated_org_id: Optional[str] = None):
+        return self.auth.fetch_user_metadata_by_email(email, include_orgs, isolated_org_id)
 
     def fetch_user_metadata_by_username(
-        self, username: str, include_orgs: bool = False
+        self, username: str, include_orgs: bool = False, isolated_org_id: Optional[str] = None
     ):
-        return self.auth.fetch_user_metadata_by_username(username, include_orgs)
+        return self.auth.fetch_user_metadata_by_username(username, include_orgs, isolated_org_id)
 
     def fetch_user_signup_query_params_by_user_id(self, user_id: str):
         return self.auth.fetch_user_signup_query_params_by_user_id(user_id)
@@ -178,6 +179,7 @@ class DjangoAuth:
         email_or_username: Optional[str] = None,
         include_orgs: bool = False,
         legacy_user_id: Optional[str] = None,
+        isolated_org_id: Optional[str] = None
     ):
         return self.auth.fetch_users_by_query(
             page_size,
@@ -186,6 +188,7 @@ class DjangoAuth:
             email_or_username,
             include_orgs,
             legacy_user_id,
+            isolated_org_id
         )
 
     def fetch_users_in_org(
@@ -378,6 +381,7 @@ class DjangoAuth:
         domain: Optional[str] = None,
         require_2fa_by: Optional[str] = None,
         extra_domains: Optional[List[str]] = None,
+        sso_trust_level: Optional[SsoTrustLevel] = None
     ):
         return self.auth.update_org_metadata(
             org_id,
@@ -390,6 +394,7 @@ class DjangoAuth:
             domain,
             require_2fa_by,
             extra_domains,
+            sso_trust_level
         )
 
     def subscribe_org_to_role_mapping(self, org_id: str, custom_role_mapping_name: str):
@@ -602,6 +607,10 @@ class DjangoAuth:
     def fetch_employee_by_id(self, employee_id: str):
         return self.auth.fetch_employee_by_id(employee_id)
     
+    def migrate_org_to_isolated(self, org_id: str):
+        return self.auth.migrate_org_to_isolated(org_id)
+
+    
 class DjangoAuthAsync():
     def __init__(
         self, 
@@ -687,11 +696,11 @@ class DjangoAuthAsync():
     async def fetch_user_metadata_by_user_id(self, user_id: str, include_orgs: bool = False):
         return await self.auth.fetch_user_metadata_by_user_id(user_id, include_orgs)
     
-    async def fetch_user_metadata_by_email(self, email: str, include_orgs: bool = False):
-        return await self.auth.fetch_user_metadata_by_email(email, include_orgs)
+    async def fetch_user_metadata_by_email(self, email: str, include_orgs: bool = False, isolated_org_id: Optional[str] = None):
+        return await self.auth.fetch_user_metadata_by_email(email, include_orgs, isolated_org_id)
 
-    async def fetch_user_metadata_by_username(self, username: str, include_orgs: bool = False):
-        return await self.auth.fetch_user_metadata_by_username(username, include_orgs)
+    async def fetch_user_metadata_by_username(self, username: str, include_orgs: bool = False, isolated_org_id: Optional[str] = None):
+        return await self.auth.fetch_user_metadata_by_username(username, include_orgs, isolated_org_id)
 
     async def fetch_user_signup_query_params_by_user_id(self, user_id: str):
         return await self.auth.fetch_user_signup_query_params_by_user_id(user_id)
@@ -722,9 +731,9 @@ class DjangoAuthAsync():
 
     async def fetch_users_by_query(
         self, page_size: int = 10, page_number: int = 0, order_by: UserQueryOrderBy = UserQueryOrderBy.CREATED_AT_ASC,
-        email_or_username: Optional[str] = None, include_orgs: bool = False, legacy_user_id: Optional[str] = None
+        email_or_username: Optional[str] = None, include_orgs: bool = False, legacy_user_id: Optional[str] = None, isolated_org_id: Optional[str] = None
     ):
-        return await self.auth.fetch_users_by_query(page_size, page_number, order_by, email_or_username, include_orgs, legacy_user_id)
+        return await self.auth.fetch_users_by_query(page_size, page_number, order_by, email_or_username, include_orgs, legacy_user_id, isolated_org_id)
 
     async def fetch_users_in_org(
         self, org_id: str, page_size: int = 10, page_number: int = 0, include_orgs: bool = False, role: Optional[str] = None
@@ -846,10 +855,11 @@ class DjangoAuthAsync():
         domain: Optional[str] = None,
         require_2fa_by: Optional[str] = None,
         extra_domains: Optional[List[str]] = None,
+        sso_trust_level: Optional[SsoTrustLevel] = None
     ):
         return await self.auth.update_org_metadata(
             org_id, name, can_setup_saml, metadata, max_users,
-            can_join_on_email_domain_match, members_must_have_email_domain_match, domain, require_2fa_by, extra_domains
+            can_join_on_email_domain_match, members_must_have_email_domain_match, domain, require_2fa_by, extra_domains, sso_trust_level
         )
 
     async def subscribe_org_to_role_mapping(self, org_id: str, custom_role_mapping_name: str):
@@ -1060,6 +1070,9 @@ class DjangoAuthAsync():
         return await self.auth.fetch_employee_by_id(
             employee_id
         )
+    
+    async def migrate_org_to_isolated(self, org_id: str):
+        return await self.auth.migrate_org_to_isolated(org_id)
 
 
 def init_auth(
