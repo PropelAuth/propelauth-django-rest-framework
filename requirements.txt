@@ -1,6 +1,0 @@
-django
-djangorestframework
-propelauth-py==4.2.9
-pytest
-requests-mock
-httpx
