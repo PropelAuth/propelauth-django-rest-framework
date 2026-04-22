@@ -1,6 +1,6 @@
 [project]
 name = "propelauth-django-rest-framework"
-version = "4.3.2"
+version = "4.4.0"
 description = "A library for managing authentication in Django Rest Framework"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -9,7 +9,7 @@ authors = [{ name = "PropelAuth", email = "support@propelauth.com" }]
 dependencies = [
     "django",
     "djangorestframework",
-    "propelauth-py==4.3.2",
+    "propelauth-py==4.4.0",
     "requests",
     "httpx>=0.28.1",
 ]
