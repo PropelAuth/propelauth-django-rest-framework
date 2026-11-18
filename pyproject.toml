@@ -1,9 +1,9 @@
 [project]
 name = "propelauth-django-rest-framework"
-version = "4.4.0"
+version = "4.5.0"
 description = "A library for managing authentication in Django Rest Framework"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "PropelAuth", email = "support@propelauth.com" }]
 dependencies = [
@@ -18,10 +18,7 @@ dependencies = [
 Homepage = "https://github.com/propelauth/propelauth-django-rest-framework"
 
 [dependency-groups]
-dev = [
-    "pytest",
-    "requests-mock",
-]
+dev = ["pytest", "requests-mock"]
 
 [build-system]
 requires = ["hatchling"]
@@ -29,6 +26,7 @@ build-backend = "hatchling.build"
 
 [tool.uv]
 no-build = false
+exclude-newer-package = { propelauth-py = false }
 
 [tool.hatch.build.targets.wheel]
 packages = ["propelauth_django_rest_framework"]
